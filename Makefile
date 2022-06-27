@@ -11,8 +11,7 @@ CXXFLAGS= $(CXXVERSION) -g -fprofile-arcs -ftest-coverage
 LINKFLAGS= -lgtest
 
 # Directories
-SRC_DIR_CPP = src/cpp
-SRC_DIR_AOP = src/aop
+SRC_DIR = src
 SRC_INCLUDE = include
 INCLUDE = -I ${SRC_INCLUDE}
 GTEST_DIR = test
@@ -47,14 +46,14 @@ clean:
 
 # compilation using the files in include, src, and src/project, but not test
 .PHONY: $(PROJECT)
-$(PROJECT): $(SRC_DIR_CPP)/*.cpp
+$(PROJECT): $(SRC_DIR)/*.cpp
 	$(CXX) $(CXXFLAGS) -o $(PROJECT) $(INCLUDE) $(SRC_DIR_CPP)/*.cpp
 
-profiler: $(SRC_DIR_CPP)/*.cpp
-	$(ACXX) $(CXXFLAGS) -o $(PROJECT)-profile -a $(SRC_DIR_AOP)/callCounter.ah $(INCLUDE) $(SRC_DIR_CPP)/*.cpp
+profiler: $(SRC_DIR)/*.cpp
+	$(ACXX) $(CXXFLAGS) -o $(PROJECT)-profile -a $(SRC_DIR)/profiler.ah $(INCLUDE) $(SRC_DIR)/*.cpp
 
 cacher: $(SRC_DIR_CPP)/*.cpp
-	$(ACXX) $(CXXFLAGS) -o $(PROJECT)-cache -a $(SRC_DIR_AOP)/cacher.ah -a $(SRC_DIR_AOP)/callCounter.ah $(INCLUDE) $(SRC_DIR_CPP)/*.cpp
+	$(ACXX) $(CXXFLAGS) -o $(PROJECT)-cache -a $(SRC_DIR)/cacher.ah -a $(SRC_DIR)/profiler.ah $(INCLUDE) $(SRC_DIR_CPP)/*.cpp
 
 .PHONY: test
 $(GTEST): $(GTEST_DIR)/*.cpp $(SRC_DIR_CPP)/fibonacci.cpp
