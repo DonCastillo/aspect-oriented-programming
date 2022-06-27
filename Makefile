@@ -1,20 +1,21 @@
 # The targets in this file are used in .gitlab-ci.yml and the files created are found in the .gitignore
 # Changing any names below can change the target names which will require that you update .gitlab_ci.yml and .gitignore
-PROJECT = project
-GTEST = test_$(PROJECT)
+PROJECT = fibonacci
+GTEST = $(PROJECT)-test
 
 # Compilation command and flags
 CXX=g++
+ACXX=ag++
 CXXVERSION= -std=c++11
 CXXFLAGS= $(CXXVERSION) -g -fprofile-arcs -ftest-coverage
 LINKFLAGS= -lgtest
 
 # Directories
-SRC_DIR = src
-PROJECT_SRC_DIR = src/project
-GTEST_DIR = test
+SRC_DIR_CPP = src/cpp
+SRC_DIR_AOP = src/aop
 SRC_INCLUDE = include
 INCLUDE = -I ${SRC_INCLUDE}
+GTEST_DIR = test
 
 # Tool variables
 GCOV = gcov
@@ -29,7 +30,7 @@ STYLE_CHECK = cpplint.py
 DOXY_DIR = docs/code
 
 # Default goal, used by Atom for local compilation
-.DEFAULT_GOAL := compileProject
+.DEFAULT_GOAL := $(PROJECT)
 
 # default rule for compiling .cc to .o
 %.o: %.cpp
@@ -44,27 +45,29 @@ clean:
 	$(GTEST) $(MEMCHECK_RESULTS) $(COVERAGE_DIR)  \
 	$(PROJECT).exe $(GTEST).exe
 
-# compilation using the files in include, src, and test, but not src/project
-$(GTEST): $(GTEST_DIR) $(SRC_DIR)
-	$(CXX) $(CXXFLAGS) -o $(GTEST) $(INCLUDE) \
-	$(GTEST_DIR)/*.cpp $(SRC_DIR)/*.cpp $(LINKFLAGS)
-
 # compilation using the files in include, src, and src/project, but not test
-compileProject: $(SRC_DIR) $(PROJECT_SRC_DIR)
-	$(CXX) $(CXXVERSION) -o $(PROJECT) $(INCLUDE) \
-	$(SRC_DIR)/*.cpp $(PROJECT_SRC_DIR)/*.cpp
+.PHONY: $(PROJECT)
+$(PROJECT): $(SRC_DIR_CPP)/*.cpp
+	$(CXX) $(CXXFLAGS) -o $(PROJECT) $(INCLUDE) $(SRC_DIR_CPP)/*.cpp
+
+profiler: $(SRC_DIR_CPP)/*.cpp
+	$(ACXX) $(CXXFLAGS) -o $(PROJECT)-profile -a $(SRC_DIR_AOP)/callCounter.ah $(INCLUDE) $(SRC_DIR_CPP)/*.cpp
+
+cacher: $(SRC_DIR_CPP)/*.cpp
+	$(ACXX) $(CXXFLAGS) -o $(PROJECT)-cache -a $(SRC_DIR_AOP)/cacher.ah -a $(SRC_DIR_AOP)/callCounter.ah $(INCLUDE) $(SRC_DIR_CPP)/*.cpp
+
+.PHONY: test
+$(GTEST): $(GTEST_DIR)/*.cpp $(SRC_DIR_CPP)/fibonacci.cpp
+	$(CXX) $(CXXFLAGS) -o $(GTEST) $(INCLUDE) $(GTEST_DIR)/*.cpp $(SRC_DIR_CPP)/fibonacci.cpp -lgtest
+
 
 # To perform all tests
 .PHONY: allTests
-allTests: $(GTEST) memcheck coverage docs static style
+allTests: memcheck coverage docs static style
 
 .PHONY: memcheck
-memcheck: $(GTEST)
-	valgrind --tool=memcheck --leak-check=yes --error-exitcode=1 $(GTEST)
-
-.PHONY: fullmemcheck
-fullmemcheck: $(GTEST)
-	valgrind --tool=memcheck --leak-check=full --error-exitcode=1 $(GTEST)
+memcheck: $(PROJECT)
+	valgrind --tool=memcheck --leak-check=full --error-exitcode=1 $(PROJECT) 20
 
 .PHONY: coverage
 coverage: $(GTEST)
@@ -72,7 +75,7 @@ coverage: $(GTEST)
 	# Determine code coverage
 	$(LCOV) --capture --gcov-tool $(GCOV) --directory . --output-file $(COVERAGE_RESULTS) --rc lcov_branch_coverage=1
 	# Only show code coverage for the source code files (not library files)
-	$(LCOV) --extract $(COVERAGE_RESULTS) */*/$(SRC_DIR)/* -o $(COVERAGE_RESULTS)
+	$(LCOV) --extract $(COVERAGE_RESULTS) */*/$(SRC_DIR_CPP)/* -o $(COVERAGE_RESULTS)
 	#Generate the HTML reports
 	genhtml $(COVERAGE_RESULTS) --output-directory $(COVERAGE_DIR)
 	#Remove all of the generated files from gcov

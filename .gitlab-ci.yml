@@ -4,18 +4,52 @@ stages:
    - quality
    - documentation
 
+build:
+   stage: build
+   script:
+      - make fibonacci
+   artifacts:
+      paths:
+         - fibonacci
+
 buildTests:
    stage: build
    script:
-      - make test_project
+      - make fibonacci-test
    artifacts:
       paths:
-         - test_project
+         - fibonacci-test
+
+buildProfile:
+  stage: build
+  script:
+     - make profiler
+  artifacts:
+     paths:
+        - fibonacci-profile
+
+buildCache:
+  stage: build
+  script:
+     - make cacher
+  artifacts:
+     paths:
+        - fibonacci-cache
 
 test:
    stage: test
    script:
-      - test_project
+      - fibonacci-test
+
+profile:
+   stage: test
+   script:
+      - fibonacci-profile 20
+
+caching:
+   stage: test
+   script:
+      - fibonacci-cache 20
 
 staticAnalysis:
    stage: quality

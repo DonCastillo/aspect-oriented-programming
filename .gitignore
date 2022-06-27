@@ -1,13 +1,12 @@
-# You can add to this file (carefully) but there is no need to remove items unless you need to push that item to 
+# You can add to this file (carefully) but there is no need to remove items unless you need to push that item to
 # the repo. Remember one of your groupmates may need to ignore these files.
 
 # Mac file: stores folder attributes
 *.DS_Store
 
-# Executable files as they appear in different OSes 
+# Executable files as they appear in different OSes
 *.exe
-test_project
-./project
+fibonacci*
 
 # Artifacts that are produced by different targets
 
