@@ -57,7 +57,7 @@ cacher: $(SRC_DIR)/*.cpp
 
 .PHONY: test
 $(GTEST): $(GTEST_DIR)/*.cpp $(SRC_DIR)/fibonacci.cpp
-	$(CXX) $(CXXFLAGS) -o $(GTEST) $(INCLUDE) $(GTEST_DIR)/*.cpp $(SRC_DIR)/$(PROGRAM).cpp -lgtest
+	$(CXX) $(CXXFLAGS) -o $(GTEST) $(INCLUDE) $(GTEST_DIR)/*.cpp $(SRC_DIR)/$(PROJECT).cpp -lgtest
 
 
 # To perform all tests
