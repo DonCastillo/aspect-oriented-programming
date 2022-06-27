@@ -6,7 +6,7 @@
 
 # Executable files as they appear in different OSes
 *.exe
-fibonacci*
+./fibonacci*
 
 # Artifacts that are produced by different targets
 
