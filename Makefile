@@ -52,12 +52,12 @@ $(PROJECT): $(SRC_DIR)/*.cpp
 profiler: $(SRC_DIR)/*.cpp
 	$(ACXX) $(CXXFLAGS) -o $(PROJECT)-profile -a $(SRC_DIR)/profiler.ah $(INCLUDE) $(SRC_DIR)/*.cpp
 
-cacher: $(SRC_DIR_CPP)/*.cpp
+cacher: $(SRC_DIR)/*.cpp
 	$(ACXX) $(CXXFLAGS) -o $(PROJECT)-cache -a $(SRC_DIR)/cacher.ah -a $(SRC_DIR)/profiler.ah $(INCLUDE) $(SRC_DIR)/*.cpp
 
 .PHONY: test
 $(GTEST): $(GTEST_DIR)/*.cpp $(SRC_DIR)/fibonacci.cpp
-	$(CXX) $(CXXFLAGS) -o $(GTEST) $(INCLUDE) $(GTEST_DIR)/*.cpp $(SRC_DIR)/*.cpp -lgtest
+	$(CXX) $(CXXFLAGS) -o $(GTEST) $(INCLUDE) $(GTEST_DIR)/*.cpp $(SRC_DIR)/$(PROGRAM).cpp -lgtest
 
 
 # To perform all tests
