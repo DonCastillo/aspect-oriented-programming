@@ -56,7 +56,7 @@ cacher: $(SRC_DIR_CPP)/*.cpp
 	$(ACXX) $(CXXFLAGS) -o $(PROJECT)-cache -a $(SRC_DIR)/cacher.ah -a $(SRC_DIR)/profiler.ah $(INCLUDE) $(SRC_DIR)/*.cpp
 
 .PHONY: test
-$(GTEST): $(GTEST_DIR)/*.cpp $(SRC_DIR_CPP)/fibonacci.cpp
+$(GTEST): $(GTEST_DIR)/*.cpp $(SRC_DIR)/fibonacci.cpp
 	$(CXX) $(CXXFLAGS) -o $(GTEST) $(INCLUDE) $(GTEST_DIR)/*.cpp $(SRC_DIR)/*.cpp -lgtest
 
 
