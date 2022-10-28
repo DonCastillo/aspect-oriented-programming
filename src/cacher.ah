@@ -1,0 +1,24 @@
+#ifndef __CACHER_AH__
+#define __CACHER_AH__
+
+#include <iostream>
+#include <map>
+#include <typeinfo>
+
+
+aspect Cacher {
+
+    std::map<unsigned int, unsigned int> cache;
+    
+    advice call("% fibonacci(...)") && args(n) : around(unsigned int n) {
+        auto search = cache.find(n);
+        if(search != cache.end()) {
+            *tjp->result() = cache[n];
+        } else {
+            tjp->proceed();
+            cache[n] = *tjp->result();
+        }   
+    }
+};
+
+#endif
