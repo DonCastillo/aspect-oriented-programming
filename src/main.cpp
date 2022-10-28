@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include "../include/fibonacci.h"
 
 int main(int argc, char const *argv[]) {
