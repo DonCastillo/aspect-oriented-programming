@@ -1,0 +1,18 @@
+#ifndef __PROFILER_AH__
+#define __PROFILER_AH__
+
+#include <iostream>
+
+aspect Profiler {
+    int count = 0;
+
+    advice call("% fibonacci(...)") : after() {
+        count++;
+    }
+
+    advice execution("% main(...)") : after() {
+        std::cout << "Called " << count << " times." << std::endl;
+    }
+
+};
+#endif
